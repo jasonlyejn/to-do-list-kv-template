@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AIKANG Care Center Admission Form</title>
+<style>
+  :root{
+    --blue:#1565c0;--blue-l:#e3f2fd;--red:#c62828;--red-l:#ffebee;
+    --green:#2e7d32;--green-l:#e8f5e9;--purple:#6a1b9a;--purple-l:#f3e5f5;
+    --orange:#e65100;--orange-l:#fff3e0;--yellow-l:#fffde7;
+    --grey:#37474f;--grey-l:#eceff1;--line:#90a4ae;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Segoe UI",Arial,"Noto Color Emoji",sans-serif;margin:0;background:#f0f2f5;color:#1a1a1a;font-size:12px;}
+  .page{background:#fff;width:210mm;min-height:297mm;margin:14px auto;padding:14mm 12mm;box-shadow:0 1px 8px rgba(0,0,0,.18);}
+  h1{font-size:20px;text-align:center;margin:0;color:var(--blue);letter-spacing:.5px;}
+  .subtitle{text-align:center;font-size:11px;color:#555;margin:4px 0 12px;}
+  .section{border:1.5px solid var(--line);border-radius:6px;margin:10px 0;overflow:hidden;}
+  .section>.head{font-weight:700;padding:6px 10px;color:#fff;font-size:13px;}
+  .grey .head{background:var(--grey);}.blue .head{background:var(--blue);}
+  .red .head{background:var(--red);}.green .head{background:var(--green);}
+  .purple .head{background:var(--purple);}.orange .head{background:var(--orange);}
+  table{width:100%;border-collapse:collapse;}
+  td{border:1px solid #cfd8dc;padding:5px 7px;vertical-align:top;line-height:1.5;}
+  td.lbl{background:var(--grey-l);font-weight:600;width:16%;white-space:nowrap;}
+  td.lbl.opt{background:var(--yellow-l);}
+  .red td.lbl{background:var(--red-l);}.blue td.lbl{background:var(--blue-l);}
+  .green td.lbl{background:var(--green-l);}.purple td.lbl{background:var(--purple-l);}
+  .orange td.lbl{background:var(--orange-l);}
+  .pagebar{text-align:center;font-size:11px;color:#607d8b;margin-top:14px;letter-spacing:1px;border-top:2px dashed #b0bec5;padding-top:6px;}
+  .vitals td{text-align:center;}.vitals td.lbl{text-align:left;}
+  .bodydiagram{height:150px;background:repeating-linear-gradient(45deg,#fafafa,#fafafa 10px,#f0f0f0 10px,#f0f0f0 20px);border:1px dashed #b0bec5;text-align:center;color:#90a4ae;line-height:150px;}
+  .legend{font-size:11px;background:var(--yellow-l);padding:8px;border-radius:4px;border:1px solid #ffe082;}
+  .footer{text-align:center;font-size:10px;color:#777;margin-top:10px;border-top:1px solid #ccc;padding-top:6px;}
+  .declaration{font-size:11px;background:#fffde7;border:1px solid #ffe082;padding:8px;border-radius:4px;margin:8px 0;}
+  @media print{body{background:#fff;}.page{box-shadow:none;margin:0;page-break-after:always;}}
+</style>
+</head>
+<body>
+
+<!-- ===== PAGE 1 ===== -->
+<div class="page">
+  <h1>🏥 AIKANG CARE CENTER ADMISSION FORM</h1>
+  <div class="subtitle">🟡 Checkbox Options • 🔴 Biohazard • 🟢 Arrival/Follow-up • 🔵 Vitals/O2 • 🟣 Skin • Mark ☑ for selected</div>
+
+  <div class="section grey">
+    <div class="head">🏢 A. FACILITY INFO &nbsp;&nbsp; 👤 B. RESIDENT PERSONAL DETAILS</div>
+    <table>
+      <tr><td class="lbl">📅 Admission Date</td><td></td><td class="lbl">👤 Full Name</td><td colspan="3"></td></tr>
+      <tr><td class="lbl">🛏️ Room/Bed No.</td><td></td><td class="lbl">🆔 IC/Passport</td><td></td><td class="lbl">📅 DOB</td><td>____/____/____</td></tr>
+      <tr><td class="lbl">🔢 Admission No.</td><td></td><td class="lbl">📊 Age</td><td>_____ years</td><td class="lbl">⚧️ Gender</td><td>☐ Male ☐ Female</td></tr>
+      <tr><td class="lbl">📍 Ward/Unit</td><td></td><td class="lbl">🌍 Nationality</td><td>☐ Malaysian ☐ Other:____</td><td class="lbl">💍 Marital</td><td>☐ Single ☐ Married ☐ Widowed</td></tr>
+      <tr><td class="lbl opt">🙏 Race</td><td class="opt">☐ Malay ☐ Chinese ☐ Indian ☐ Sikh ☐ Other___</td><td class="lbl opt">🙏 Religion</td><td class="opt">☐ Islam ☐ Buddhism ☐ Christian ☐ Hindu ☐ Other:___</td><td class="lbl">📱 Contact</td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="section grey">
+    <div class="head">👨‍👩‍👧 C. NEXT OF KIN / EMERGENCY CONTACT</div>
+    <table>
+      <tr><td class="lbl">👤 Primary NOK</td><td></td><td class="lbl">🔗 Relationship</td><td></td><td class="lbl">📱 NOK Phone</td><td></td></tr>
+      <tr><td class="lbl">🆔 NOK IC No.</td><td></td><td class="lbl">📍 NOK Address</td><td colspan="3"></td></tr>
+      <tr><td class="lbl">👤 Secondary Contact</td><td></td><td class="lbl">🔗 Relationship</td><td></td><td class="lbl">📞 Phone</td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="section grey">
+    <div class="head">🩺 D. MEDICAL INFORMATION & CONDITIONS</div>
+    <table>
+      <tr><td class="lbl opt">🩺 Medical Conditions</td><td class="opt" colspan="5">☐ Diabetes ☐ Hypertension ☐ Heart Disease ☐ Stroke ☐ Cancer ☐ Kidney Disease ☐ None</td></tr>
+      <tr><td class="lbl opt">🫁 Chronic Illness</td><td class="opt" colspan="5">☐ Asthma ☐ COPD ☐ Arthritis ☐ Dementia ☐ Parkinson's ☐ Epilepsy ☐ None ☐ Other:____</td></tr>
+      <tr><td class="lbl opt">⚠️ Allergies</td><td class="opt" colspan="5">☐ Penicillin ☐ Aspirin ☐ Seafood ☐ Nuts ☐ Latex ☐ None</td></tr>
+      <tr><td class="lbl opt">♿ Physical Disabilities</td><td class="opt" colspan="5">☐ Visual Impairment ☐ Hearing Impairment ☐ Amputation ☐ Paralysis ☐ None</td></tr>
+      <tr><td class="lbl opt">🧠 Mental/Cognitive</td><td class="opt" colspan="5">☐ Dementia ☐ Alzheimer's ☐ Depression ☐ Anxiety ☐ Schizophrenia ☐ None</td></tr>
+      <tr><td class="lbl opt">🚶 Mobility Status</td><td class="opt" colspan="5">☐ Independent ☐ Assisted ☐ Bedridden</td></tr>
+      <tr><td class="lbl opt">🍽️ Dietary Requirements</td><td class="opt" colspan="5">☐ Normal ☐ Diabetic ☐ Low Salt ☐ Vegetarian ☐ Soft ☐ Other:____</td></tr>
+      <tr><td class="lbl opt">⭐ Special Care</td><td class="opt" colspan="5">☐ Fall Prevention ☐ Pressure Ulcer Care ☐ Catheter Care ☐ Wound Dressing ☐ Feeding Tube ☐ Suction ☐ None</td></tr>
+      <tr><td class="lbl">💊 Medication Name</td><td colspan="2"></td><td class="lbl">Dose / Frequency / Route</td><td colspan="2"></td></tr>
+      <tr><td class="lbl">📝 Additional Medical Notes</td><td colspan="5" style="height:60px;"></td></tr>
+    </table>
+  </div>
+
+  <div class="section red">
+    <div class="head">⚠️ BIOHAZARD &nbsp;&nbsp; 🔵 OXYGEN THERAPY</div>
+    <table>
+      <tr><td class="lbl">🦠 Blood-borne</td><td class="opt">☐ HIV/AIDS ☐ Hepatitis B ☐ Hepatitis C</td><td class="lbl">🫁 O2 Type</td><td colspan="3">☐ Continuous ☐ PRN (As Needed) ☐ None</td></tr>
+      <tr><td class="lbl">🫁 Respiratory</td><td class="opt">☐ Tuberculosis (TB) ☐ MRSA ☐ COVID-19</td><td class="lbl">😷 Delivery Device</td><td colspan="3">☐ Nasal Cannula ☐ Face Mask ☐ Non-Rebreather</td></tr>
+      <tr><td class="lbl">🩹 Skin/Wound</td><td class="opt">☐ Open Wounds ☐ Infectious Skin Condition</td><td class="lbl">🔧 Respiratory Support</td><td colspan="3">☐ CPAP ☐ BiPAP ☐ Ventilator ☐ N/A</td></tr>
+      <tr><td class="lbl">⚡ Precautions</td><td class="opt">☐ Requires Isolation ☐ Standard Precautions</td><td class="lbl">📊 Flow Rate</td><td colspan="3">☐ Portable ☐ Stationary _____ L/min</td></tr>
+      <tr><td class="lbl">📝 Biohazard Notes</td><td></td><td class="lbl">📝 O2 Notes</td><td></td><td class="lbl">📅 Next Appointment</td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="section green">
+    <div class="head">🏥 E. ON ARRIVAL ASSESSMENT</div>
+    <table>
+      <tr><td class="lbl">⏰ Date & Time</td><td></td><td class="lbl">🚑 Arrived By</td><td>☐ Ambulance ☐ Family ☐ Wheelchair ☐ Walk-in</td><td class="lbl">👥 Accompanied By</td><td></td></tr>
+      <tr><td class="lbl">💭 Consciousness</td><td>☐ Alert ☐ Drowsy ☐ Confused ☐ Unresponsive</td><td class="lbl">🧭 Orientation</td><td>☐ Person ☐ Place ☐ Time ☐ Disoriented</td><td class="lbl">😣 Pain (0-10)</td><td>☐ 0 None ☐ 1-3 Mild ☐ 4-6 Mod ☐ 7-10 Severe</td></tr>
+      <tr><td class="lbl">⚡ Fall Risk</td><td>☐ Low ☐ Moderate ☐ High Risk</td><td class="lbl">🍎 Nutritional</td><td>☐ Well Nourished ☐ Mildly ☐ Moderately ☐ Severely Malnourished</td><td class="lbl">💧 Hydration</td><td>☐ Adequate ☐ Mild ☐ Moderate ☐ Severe Dehydration</td></tr>
+    </table>
+  </div>
+
+  <div class="section blue">
+    <div class="head">💓 F. VITAL SIGNS BASELINE</div>
+    <table class="vitals">
+      <tr><td class="lbl">💓 Vital Sign</td><td><b>Reading</b></td><td class="lbl">💓 Vital Sign</td><td><b>Reading</b></td><td class="lbl">💓 Vital Sign</td><td><b>Reading</b></td></tr>
+      <tr><td class="lbl">🩸 Blood Pressure</td><td>mmHg</td><td class="lbl">🌡️ Temperature</td><td>°C</td><td class="lbl">📊 SpO2</td><td>%</td></tr>
+      <tr><td class="lbl">❤️ Heart Rate</td><td>bpm</td><td class="lbl">🩸 Blood Glucose</td><td>mmol/L</td><td class="lbl">😣 Pain Score</td><td>/10</td></tr>
+      <tr><td class="lbl">🫁 Respiratory Rate</td><td>/min</td><td class="lbl">📏 Height</td><td>cm</td><td class="lbl">📊 BMI</td><td>kg/m²</td></tr>
+      <tr><td class="lbl">⚖️ Weight</td><td>kg</td><td class="lbl">🧠 GCS Score</td><td>/15</td><td class="lbl">👁️ Pupil Response</td><td>☐ Equal ☐ Unequal ☐ Reactive</td></tr>
+    </table>
+  </div>
+  <div class="pagebar">━━━━━━━━  PAGE 1 OF 3  ━━━━━━━━</div>
+</div>
+
+<!-- ===== PAGE 2 ===== -->
+<div class="page">
+  <h1>🏥 AIKANG CARE CENTER ADMISSION FORM <span style="font-size:13px;color:#555;">(Page 2)</span></h1>
+
+  <div class="section purple">
+    <div class="head">🩹 G. SKIN INTEGRITY ASSESSMENT</div>
+    <table>
+      <tr><td class="lbl">🔍 Overall Skin</td><td>☐ Intact ☐ Dry ☐ Fragile ☐ Bruised ☐ Rash ☐ Other</td><td class="lbl">📊 Braden Scale Risk</td><td colspan="3">☐ No Risk (19-23) ☐ Low (15-18) ☐ Mod (13-14) ☐ High (10-12) ☐ Severe (&lt;9)</td></tr>
+      <tr><td class="lbl">📈 Wound Stage</td><td>☐ Stage 1 ☐ Stage 2 ☐ Stage 3 ☐ Stage 4 ☐ Unstageable ☐ N/A</td><td class="lbl">💧 Edema</td><td colspan="3">☐ None ☐ Mild (+1) ☐ Moderate (+2) ☐ Severe (+3/+4) Location:____</td></tr>
+      <tr><td class="lbl">🩹 Existing Wounds</td><td colspan="2">☐ None ☐ Pressure Ulcer ☐ Surgical ☐ Diabetic ☐ Venous</td><td class="lbl">📷 Photo Docs</td><td colspan="2">☐ Taken ☐ Not Required ☐ Declined</td></tr>
+    </table>
+  </div>
+
+  <table style="margin-top:8px;"><tr>
+    <td style="width:50%;vertical-align:top;border:none;padding:0 6px 0 0;">
+      <div class="section purple" style="margin:0;"><div class="head">📍 BODY DIAGRAM – Mark X at wound site</div>
+        <div class="bodydiagram">(Front / Back body outline)</div></div>
+    </td>
+    <td style="width:50%;vertical-align:top;border:none;padding:0;">
+      <div class="section purple" style="margin:0;"><div class="head">📋 WOUND DOCUMENTATION TABLE</div>
+        <table>
+          <tr><td class="lbl">Site #</td><td class="lbl">📝 Description</td><td class="lbl">📝 Size/Stage</td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td></tr><tr><td>&nbsp;</td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td></tr><tr><td>&nbsp;</td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td></tr>
+        </table></div>
+    </td>
+  </tr></table>
+
+  <table style="margin-top:8px;"><tr>
+    <td style="width:50%;vertical-align:top;border:none;padding:0 6px 0 0;">
+      <div class="section grey" style="margin:0;"><div class="head">🏥 H. DOCTOR & HOSPITAL</div>
+        <table>
+          <tr><td class="lbl">🏥 Emergency Clinic/Hospital</td><td></td></tr>
+          <tr><td class="lbl">📞 Contact No.</td><td></td></tr>
+          <tr><td class="lbl">🏥 Preferred Hospital</td><td></td></tr>
+          <tr><td class="lbl">🚨 Emergency #</td><td></td></tr>
+        </table></div>
+    </td>
+    <td style="width:50%;vertical-align:top;border:none;padding:0;">
+      <div class="section green" style="margin:0;"><div class="head">💰 I. FINANCIAL & PAYMENT</div>
+        <table>
+          <tr><td class="lbl">💳 Payment Method</td><td>☐ Self ☐ Insurance &nbsp; RM ____</td></tr>
+          <tr><td class="lbl">🏦 Deposit</td><td>RM ____</td></tr>
+          <tr><td class="lbl">👤 Billing Contact</td><td></td></tr>
+          <tr><td class="lbl">📞 Phone</td><td></td></tr>
+        </table></div>
+    </td>
+  </tr></table>
+  <div class="pagebar">━━━━━━━━  PAGE 2 OF 3  ━━━━━━━━</div>
+</div>
+
+<!-- ===== PAGE 3 ===== -->
+<div class="page">
+  <h1>🏥 AIKANG CARE CENTER ADMISSION FORM <span style="font-size:13px;color:#555;">(Page 3)</span></h1>
+
+  <div class="section grey">
+    <div class="head">✍️ J. CONSENT & DECLARATION</div>
+    <table>
+      <tr><td class="lbl">✅ Medical Treatment</td><td>☐ Yes ☐ No — I consent to medical treatment as deemed necessary</td><td class="lbl">🚨 Emergency Transfer</td><td>☐ Yes ☐ No — I consent to emergency hospital transfer</td></tr>
+      <tr><td class="lbl">📊 Data Collection</td><td colspan="3">☐ Yes ☐ No — I consent to data collection for care purposes</td></tr>
+    </table>
+    <div class="declaration">📜 <b>DECLARATION:</b> I hereby declare that all information provided above is true and accurate to the best of my knowledge. I understand and agree to the terms and conditions of admission.</div>
+    <table>
+      <tr><td class="lbl">✍️ Resident/Guardian Signature</td><td></td><td class="lbl">📅 Date</td><td></td><td class="lbl">👤 Name</td><td></td></tr>
+      <tr><td class="lbl">📋 Admission Status</td><td>☐ Permanent ☐ Temporary/Daycare</td><td class="lbl">🆔 Staff ID</td><td></td><td class="lbl">📝 Verified By</td><td></td></tr>
+      <tr><td class="lbl">📝 Remarks/Notes</td><td colspan="5" style="height:40px;"></td></tr>
+    </table>
+  </div>
+
+  <div class="section green">
+    <div class="head">🏠 L. DISCHARGE CARE PLAN</div>
+    <table>
+      <tr><td class="lbl">📋 Discharge Type</td><td>☐ Home ☐ Transfer Hospital ☐ Other Facility ☐ Against Advice ☐ Deceased</td><td class="lbl">📅 Planned Date</td><td></td></tr>
+      <tr><td class="lbl">🩺 Condition</td><td>☐ Improved ☐ Stable ☐ Unchanged ☐ Deteriorated</td><td class="lbl">🚶 Mobility</td><td>☐ Independent ☐ Assisted ☐ Wheelchair ☐ Bedridden</td></tr>
+      <tr><td class="lbl">🏠 Home Care Needs</td><td>☐ Independent ☐ Family ☐ Hired Caregiver ☐ Home Nursing</td><td class="lbl">🛠️ Equipment</td><td>☐ Wheelchair ☐ Walker ☐ O2 ☐ Suction ☐ Feeding Pump ☐ None</td></tr>
+      <tr><td class="lbl">📅 Follow-up</td><td>Doctor:______ Date:____/____/____</td><td class="lbl">💊 Medications</td><td>☐ Provided ☐ Prescription Given ☐ None Required</td></tr>
+    </table>
+  </div>
+
+  <div class="section orange">
+    <div class="head">📚 M. PATIENT/FAMILY EDUCATION</div>
+    <table>
+      <tr><td class="lbl">📖 Topics Covered</td><td colspan="3">☐ Medication Management ☐ Wound Care ☐ Diet/Nutrition ☐ Exercise/Mobility ☐ Fall Prevention ☐ Infection Control ☐ Pain Management</td></tr>
+      <tr><td class="lbl">📋 Additional Topics</td><td colspan="3">☐ Disease Management ☐ Signs/Symptoms to Watch ☐ When to Seek Help ☐ Equipment Use ☐ Catheter Care ☐ Oxygen Use ☐ Diabetes Care</td></tr>
+      <tr><td class="lbl">🎓 Method Used</td><td>☐ Verbal ☐ Written ☐ Demonstration ☐ Video ☐ Pamphlets</td><td class="lbl">📄 Materials Given</td><td>☐ Care Instructions ☐ Med List ☐ Diet Guide ☐ Contact Info</td></tr>
+      <tr><td class="lbl">✅ Understanding</td><td>☐ Verbalizes Understanding ☐ Return Demonstration ☐ Needs Reinforcement</td><td class="lbl">🌐 Language</td><td>☐ English ☐ Malay ☐ Chinese ☐ Tamil ☐ Interpreter Used</td></tr>
+      <tr><td class="lbl">👨‍🏫 Educator Name</td><td></td><td class="lbl">✍️ Signature</td><td></td></tr>
+      <tr><td class="lbl">👥 Family Present</td><td>☐ Yes ☐ No</td><td class="lbl">📝 Education Notes</td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="section grey">
+    <div class="head">✍️ N. DISCHARGE SIGNATURES & ACKNOWLEDGMENT</div>
+    <table><tr><td class="lbl">👤 Resident/Guardian</td><td></td><td class="lbl">👨‍⚕️ Discharging Staff</td><td></td><td class="lbl">📅 Discharge Date/Time</td><td></td></tr></table>
+  </div>
+
+  <div class="legend"><b>📖 COLOR LEGEND:</b> ☐ = Unchecked &nbsp; ☑ = Checked │ 🟡 Yellow = Options │ 🔴 Red = Biohazard │ 🟢 Green = Discharge │ 🔵 Blue = Vitals │ 🟠 Orange = Education</div>
+  <div class="pagebar">━━━━━━━━  PAGE 3 OF 3  ━━━━━━━━</div>
+  <div class="footer">Form Version: 4.0 │ Effective: March 2026 │ AIKANG Care Center Admission Form │ CONFIDENTIAL PATIENT INFORMATION</div>
+</div>
+
+</body>
+</html>

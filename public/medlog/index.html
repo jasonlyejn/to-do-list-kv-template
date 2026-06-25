@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIKANG Medication Log & Weekly Balance — 1st Floor</title>
+<style>
+:root{
+  --navy:#1F3864; --blue:#2F5597; --greyblue:#D9E2F0; --band:#DCE6F4; --band2:#CDDCEF;
+  --yel:#FFFDE7; --line:#9AA7BC; --red:#C00000; --prn:#843C0C;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:"Aptos Narrow","Arial Narrow",Arial,sans-serif; background:#EEF1F6; color:#1a1a1a; font-size:13px;}
+
+.topbar{background:var(--navy); color:#fff; padding:8px 14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; position:sticky; top:0; z-index:50;}
+.topbar h1{font-size:16px; letter-spacing:.5px; white-space:nowrap;}
+.topbar .sub{font-size:11px; opacity:.75;}
+.topbar .spacer{flex:1;}
+.btn{background:#fff; color:var(--navy); border:none; padding:6px 12px; font-weight:bold; font-family:inherit; font-size:12px; cursor:pointer; border-radius:3px;}
+.btn:hover{background:var(--greyblue);}
+.btn.warn{background:#FBE5D6; color:var(--prn);}
+.btn.small{padding:2px 8px; font-size:11px;}
+.btn.add{background:#E2EFDA; color:#006100; border:1px solid #006100;}
+.btn.del{background:#FFC7CE; color:#9C0006; border:1px solid #9C0006; padding:1px 6px; font-size:11px;}
+.tabs{background:var(--blue); padding:6px 14px; display:flex; gap:5px; flex-wrap:wrap; position:sticky; top:44px; z-index:49;}
+.tab{background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.35); padding:4px 10px; font-size:12px; font-weight:bold; cursor:pointer; border-radius:3px; font-family:inherit;}
+.tab.active{background:#fff; color:var(--navy);}
+.tab.master{background:#FFD966; color:var(--navy); border-color:#FFD966;}
+.tab.master.active{background:#fff;}
+.subtabs{display:flex; gap:6px; margin-bottom:10px;}
+.subtab{background:var(--greyblue); color:var(--navy); border:1px solid var(--navy); padding:4px 14px; font-weight:bold; font-size:12px; cursor:pointer; font-family:inherit; border-radius:3px;}
+.subtab.active{background:var(--navy); color:#fff;}
+
+.page{max-width:1500px; margin:14px auto; background:#fff; padding:18px 22px 26px; box-shadow:0 1px 6px rgba(31,56,100,.18);}
+.copyright{text-align:right; font-size:10px; color:#888; margin-bottom:4px;}
+
+.titleblock{display:grid; grid-template-columns:1fr auto; border:2px solid var(--navy); margin-bottom:10px;}
+.titleblock .tl{padding:8px 14px;}
+.titleblock .tl .nm{font-size:15px; font-weight:bold; display:flex; align-items:center; gap:6px;}
+.titleblock .tl .ttl{font-size:21px; font-weight:bold; color:var(--navy); letter-spacing:.5px; margin-top:2px;}
+.titleblock .tr{border-left:2px solid var(--navy); display:grid; grid-template-rows:1fr 1fr; min-width:220px;}
+.titleblock .tr div{padding:5px 12px; font-weight:bold; display:flex; align-items:center; gap:8px;}
+.titleblock .tr div+div{border-top:1px solid var(--navy);}
+.allergy{border:2px solid var(--red); padding:5px 12px; margin-bottom:10px; font-weight:bold; color:var(--red); display:flex; gap:8px; align-items:center;}
+
+input.fill, .fill{background:var(--yel); border:1px solid var(--line); font-family:inherit; font-size:13px; padding:3px 6px; min-width:0;}
+input.fill:focus{outline:2px solid var(--blue);}
+input.medfield{background:#fff; border:1px dashed #B8C2D4; font-weight:bold;}
+input.medfield:focus{outline:2px solid var(--blue); border-style:solid;}
+input.namefield{font-size:14px; font-weight:bold; background:var(--yel); border:1px solid var(--line); padding:3px 6px;}
+
+table{border-collapse:collapse; width:100%;}
+th,td{border:1px solid var(--line); padding:4px 6px; text-align:center; vertical-align:middle;}
+thead th{background:var(--blue); color:#fff; font-size:11.5px; border:1px solid var(--navy);}
+thead tr.wk th{font-size:10.5px;}
+th.wkhdr{background:var(--band); color:var(--navy); border-color:var(--navy);}
+th.wkhdr.alt{background:var(--band2);}
+td.med{text-align:left; min-width:150px;}
+td.notes{text-align:left; font-size:11px; color:#444;}
+td.calc{font-weight:bold; background:#F4F7FB;}
+td.qtywk{font-weight:bold; color:var(--navy); background:#F4F7FB;}
+tr.patientband td{background:var(--navy); color:#fff; text-align:left; font-size:13.5px; font-weight:bold; padding:5px 10px; border-color:var(--navy); letter-spacing:.3px;}
+tr.patientband .rm input{width:64px; text-align:center; font-weight:bold; color:var(--navy); background:#FFD966; border:1px solid #FFD966;}
+tr.patientband input.pname{background:rgba(255,255,255,.12); border:1px dashed rgba(255,255,255,.5); color:#fff; font-weight:bold; font-size:13.5px; width:240px; padding:2px 6px;}
+td.status{font-weight:bold;}
+td.status.ok{background:#E2EFDA; color:#006100;}
+td.status.low{background:#FFF2CC; color:#9C6500;}
+td.status.reorder{background:#FFC7CE; color:#9C0006;}
+td.prnname input{color:var(--red);}
+tr.prnhdr th{background:var(--prn); border-color:#5e2a08;}
+tr.sectband td{background:var(--prn); color:#fff; font-weight:bold; letter-spacing:.5px; border-color:#5e2a08; padding:6px;}
+td input{border:1px solid var(--line); background:var(--yel); font-family:inherit; font-size:13px; padding:2px 4px;}
+td input.wide{width:100%; text-align:left;}
+td.sign input{width:100%; text-align:center; font-size:11px;}
+.addbar{margin:8px 0 4px; display:flex; gap:8px;}
+
+.legend{display:grid; grid-template-columns:1.2fr .8fr 1.3fr; border:2px solid var(--navy); margin-top:14px; font-size:11px;}
+.legend>div{padding:8px 10px;}
+.legend>div+div{border-left:1px solid var(--navy);}
+.legend h4{font-size:11.5px; color:var(--navy); margin-bottom:5px; text-transform:uppercase; letter-spacing:.4px;}
+.legend table td{border:none; padding:1px 6px; text-align:left; font-size:11px;}
+.legend .code{font-weight:bold; color:var(--red); width:34px; display:inline-block;}
+.legend .swatch{display:inline-block; width:46px; padding:0 4px; border:1px solid #999; margin-right:6px; text-align:center; font-size:10px;}
+.redink{grid-column:1/4; border-top:1px solid var(--navy); text-align:center; font-weight:bold; color:var(--red); padding:4px;}
+.verfoot{text-align:right; font-size:10px; color:#888; margin-top:6px;}
+.sig{margin-top:12px;}
+.sig table th{background:var(--navy); border-color:var(--navy);}
+.hint{background:var(--greyblue); border-left:4px solid var(--blue); padding:6px 10px; font-size:11.5px; color:#33405c; margin-bottom:10px; font-style:italic;}
+
+@media print{
+  body{background:#fff;}
+  .topbar,.tabs,.noprint,.subtabs,.addbar,.btn{display:none !important;}
+  .page{box-shadow:none; margin:0; max-width:none; padding:6px;}
+  .view{display:none;}
+  .view.printme{display:block !important; page-break-after:always;}
+  .subview{display:none !important;}
+  .subview.active{display:block !important;}
+  input{border:none !important; background:transparent !important;}
+  input.medfield{border:none !important;}
+  body{font-size:11px;}
+  th,td{padding:3px 4px;}
+}
+.view{display:none;}
+.view.active{display:block;}
+.subview{display:none;}
+.subview.active{display:block;}
+.savemsg{color:#FFD966; font-size:11px; font-weight:bold;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>AIKANG CARE CENTER BM — MEDICATION LOG &amp; WEEKLY BALANCE</h1>
+  <span class="sub">1ST FLOOR &nbsp;•&nbsp; VER. IV &nbsp;•&nbsp; FRIDAY COUNTS &nbsp;•&nbsp; LINKED MASTER · LOG · CHART</span>
+  <span class="spacer"></span>
+  <span class="savemsg" id="savemsg"></span>
+  <button class="btn add" onclick="addPatient()">➕ ADD PATIENT</button>
+  <button class="btn" onclick="saveAll()">💾 SAVE</button>
+  <button class="btn" onclick="window.print()">🖨 PRINT VIEW</button>
+  <button class="btn" onclick="exportJSON()">⬇ BACKUP</button>
+  <button class="btn warn" onclick="document.getElementById('importfile').click()">⬆ RESTORE</button>
+  <input type="file" id="importfile" accept=".json" style="display:none" onchange="importJSON(this)">
+</div>
+<div class="tabs" id="tabs"></div>
+<div id="views"></div>
+
+<script id="kv-bridge">
+(function(){
+  var KEYS = ['aikang_medlog_v4','aikang_medlog_v3'];
+  window.__kvPrefetch = (async function(){
+    for(var k of KEYS){
+      try{
+        var r = await fetch('/api/kv?k='+encodeURIComponent(k));
+        if(!r.ok) continue;
+        var d = await r.json();
+        if(d.value != null) localStorage.setItem(k, d.value);
+      }catch(e){}
+    }
+  })();
+  var _set = Storage.prototype.setItem;
+  Storage.prototype.setItem = function(k,v){
+    _set.call(this,k,v);
+    if(KEYS.indexOf(k)>=0){
+      fetch('/api/kv',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({k:k,v:v})}).catch(function(){});
+    }
+  };
+})();
+</script>
+<script>
+const SEED = [{"sheet":"101A- NEOH SOON HOE","name":"NEOH SOON HOE","room":"101A","meds":[{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1/2 TAB DAILY; OMIT IF SBP< 120mmhg","upd":0.5,"dpd":1,"dpw":7,"uid":"u1"},{"name":"ASPIRIN","dose":"100/45","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u2"},{"name":"FLUROXAMINE","dose":"50MG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u3"},{"name":"ATROVASTATIN","dose":"40MG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u4"}],"prn":[{"name":"DUPHALAC","dose":"20MLS","freq":"BD","indication":"BNO> 3 DAYS","max":"45MLS","uid":"u5"}],"pid":"P0"},{"sheet":"101B-LIM BAK LENG","name":"LIM BAK LENG","room":"101B","meds":[{"name":"PANTOPRAZOLE","dose":"40MG","freq":"OD","times":"6AM","notes":"PRE MEAL; 1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u6"},{"name":"CARDIPRIN","dose":"100/45MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u7"},{"name":"SELECK 2 COMPLEX","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u8"},{"name":"NaCl","dose":"500MG","freq":"TDS","times":"6AM/3PM/9PM","notes":"1 TAB 3X A DAY","upd":1.0,"dpd":3,"dpw":21,"uid":"u9"},{"name":"TCM POWDER","dose":"I/I","freq":"TDS","times":"9AM/5PM/10PM","notes":"REFER TO PACKING. GAPPING WITH USUAL MED","upd":"","dpd":3,"dpw":21,"uid":"u10"},{"name":"FOSAMAX","dose":"70MG","freq":"WEEKLY","times":"6AM","notes":"1 TAB  WEEKLY FRIDAY FOR 1 MONTH","upd":1.0,"dpd":0,"dpw":1,"uid":"u11"}],"prn":[{"name":"T. TRAMADOL","dose":"50MG","freq":"TDS","indication":"IF SERVER PAIN","max":"400MG","uid":"u12"}],"pid":"P1"},{"sheet":"103A- LEM SHEU KEM","name":"LEM SHEU KEM","room":"103A","meds":[],"prn":[{"name":"DUPHALAC","dose":"20MLS","freq":"BD","indication":"BNO> 3 DAYS","max":"45MLS","uid":"u13"}],"pid":"P2"},{"sheet":"105B-ANG MOY LING","name":"ANG MOY LING","room":"105B","meds":[{"name":"MDI. SPIOLTO RESPIMAT","dose":"II/II","freq":"OD","times":"6AM","notes":"2 PUFF DAILY","upd":2.0,"dpd":1,"dpw":7,"uid":"u14"},{"name":"BISOPROLOL","dose":"5MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X A DAY; OMIT IF HR <60bpm","upd":1.0,"dpd":2,"dpw":14,"uid":"u15"},{"name":"KEPPRA","dose":"500MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X A DAY","upd":1.0,"dpd":2,"dpw":14,"uid":"u16"},{"name":"URAL","dose":"I/I","freq":"TDS","times":"6AM/3PM/9PM","notes":"1 SACHET 3X A DAY; DISOLVED IN WATER","upd":1.0,"dpd":3,"dpw":21,"uid":"u17"},{"name":"TCM POWDER","dose":"I/I","freq":"TDS","times":"9AM/5PM/10PM","notes":"REFER TO PACKING. GAPPING WITH USUAL MED","upd":"","dpd":3,"dpw":21,"uid":"u18"}],"prn":[{"name":"DUPHALAC","dose":"15MLS","freq":"BD","indication":"BNO> 3 DAYS","max":"45MLS","uid":"u19"}],"pid":"P3"},{"sheet":"105C- LIM MOAY","name":"LIM MOAY","room":"105C","meds":[{"name":"SANGOBION","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u20"},{"name":"GRO GOID","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u21"},{"name":"PLAQUENIL","dose":"200MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X A DAY","upd":1.0,"dpd":2,"dpw":14,"uid":"u22"},{"name":"TRICON- E","dose":"I/I","freq":"BD","times":"6AM/6PM","notes":"APPLIED AT AFFECTED AREA 2X A DAY","upd":"","dpd":2,"dpw":14,"uid":"u23"},{"name":"PRAZOVEX","dose":"I/I","freq":"ON","times":"9PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u24"}],"prn":[],"pid":"P4"},{"sheet":"105D-OOI SIN CHOO","name":"OOI SIN CHOO","room":"105D","meds":[{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u25"},{"name":"CALCITRIOL","dose":"0.25MCG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u26"},{"name":"ESATALOPRAM","dose":"10MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u27"},{"name":"MEMENTOR","dose":"10MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u28"},{"name":"CALCIUM CARBONATE","dose":"500MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u29"},{"name":"MECOBALAMIN","dose":"500MG","freq":"TDS","times":"6AM/3PM/9PM","notes":"1 TAB 3X A DAYS","upd":1.0,"dpd":3,"dpw":21,"uid":"u30"},{"name":"RIVAMENSA PATCH","dose":"I/I","freq":"ON","times":"9PM","notes":"TO PASTE @ BACK OF THE SHOULDER ON NIGHT","upd":"","dpd":1,"dpw":7,"uid":"u31"},{"name":"ALENDRONATE ACID","dose":"70MG","freq":"WEEKLY","times":"6AM","notes":"1TAB 1 WEEK ONCE","upd":1.0,"dpd":"","dpw":1,"uid":"u32"}],"prn":[],"pid":"P5"},{"sheet":"106A- SIM SEONG KEAT","name":"SIM SEONG KEAT","room":"106A","meds":[{"name":"PANTOPRAZOLE","dose":"40MG","freq":"OD","times":"6AM","notes":"PRE MEAL; 20 MLS DAILY; IN FRIDGE","upd":"","dpd":1,"dpw":7,"uid":"u33"},{"name":"ISONIAZID","dose":"300MG","freq":"OD","times":"6AM","notes":"3 TAB DAILY","upd":3.0,"dpd":1,"dpw":7,"uid":"u34"},{"name":"RIFAMPICIN","dose":"600MG","freq":"OD","times":"6AM","notes":"2 TAB DAILY","upd":2.0,"dpd":1,"dpw":7,"uid":"u35"},{"name":"PYRIDOXINE","dose":"10MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u36"},{"name":"FERROUS FUMARATE","dose":"200MG","freq":"OD","times":"6AM","notes":"2 TAB DAILY","upd":2.0,"dpd":1,"dpw":7,"uid":"u37"},{"name":"FOLIC ACID","dose":"10MG","freq":"OD","times":"6AM","notes":"2 TAB DAILY","upd":2.0,"dpd":1,"dpw":7,"uid":"u38"},{"name":"VIT B COMPLEX","dose":"II/II","freq":"OD","times":"6AM","notes":"2 TAB DAILY","upd":2.0,"dpd":1,"dpw":7,"uid":"u39"},{"name":"SYRUP MORPHINE","dose":"2MG","freq":"OD","times":"9AM/9PM","notes":"2.5MLS AS PER TITRATE ACCORDINGLY TO SEVERITY OF PAIN","upd":"","dpd":1,"dpw":7,"uid":"u40"},{"name":"SYRUP LACTULOSE","dose":"10MLS","freq":"ON","times":"9PM","notes":"10MLS ON NIGHT","upd":"","dpd":1,"dpw":7,"uid":"u41"}],"prn":[],"pid":"P6"},{"sheet":"106B- ANG HOCK LONG","name":"ANG HOCK LONG","room":"106B","meds":[{"name":"PROTEGEN","dose":"I/I","freq":"EOD","times":"6AM","notes":"EACH OTHER DAY 1 BTL OVER 24 HOURS, DIRECT INGEST.","upd":"","dpd":"","dpw":3.5,"uid":"u42"},{"name":"ATENOLOL","dose":"1OOMG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u43"},{"name":"CONVERSYL","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF SBP <120mmhg","upd":1.0,"dpd":1,"dpw":7,"uid":"u44"},{"name":"ZANIDIP","dose":"5MG","freq":"OD","times":"6AM","notes":"1/2 TAB DAILY","upd":0.5,"dpd":1,"dpw":7,"uid":"u45"},{"name":"JANUMET XR","dose":"50/1000MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u46"},{"name":"SANGOBION","dose":"I/I","freq":"BD","times":"6AM/6PM","notes":"1 CAPSULE 2X A DAY","upd":1.0,"dpd":2,"dpw":14,"uid":"u47"},{"name":"DAFLON","dose":"500MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X DAILY","upd":1.0,"dpd":2,"dpw":14,"uid":"u48"},{"name":"SIMVASTATIN","dose":"10MG","freq":"ON","times":"6PM","notes":"1/2  TAB ON NIGHT","upd":0.5,"dpd":1,"dpw":7,"uid":"u49"},{"name":"S/C RECOMMON","dose":"4000\u00fc","freq":"WEEKLY","times":"7PM","notes":"2 NEEDLE WEEKLY MONDAY ON NIGHT","upd":"","dpd":0,"dpw":1,"uid":"u50"},{"name":"UTIX","dose":"I/I","freq":"TDS","times":"6AM/3PM/9PM","notes":"1 SACHET 3X A DAY; DISSOLVED IN WATER","upd":1.0,"dpd":3,"dpw":21,"uid":"u51"}],"prn":[],"pid":"P7"},{"sheet":"106C- ARUMUGAM","name":"ARUMUGAM","room":"106C","meds":[],"prn":[],"pid":"P8"},{"sheet":"107A- TEOH AH SIAM","name":"TEOH AH SIAM","room":"107A","meds":[{"name":"PANTOPRAZOLE","dose":"40MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; PRE MEAL","upd":1.0,"dpd":1,"dpw":7,"uid":"u52"},{"name":"CALCIUM CARBONATE","dose":"500MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u53"},{"name":"CALCITRIOL","dose":"0.25MCG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u54"},{"name":"ASCORBIC ACID","dose":"500MG","freq":"OD","times":"6AM","notes":"5 TAB DAILY.","upd":5.0,"dpd":1,"dpw":7,"uid":"u55"},{"name":"VITAMIN B","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u56"},{"name":"CONCOR","dose":"2.5MG","freq":"OD","times":"6AM","notes":"1/2 TAB DAILY;  OMIT IF HR<50bpm","upd":0.5,"dpd":1,"dpw":7,"uid":"u57"},{"name":"NATRILIX SR","dose":"1.5MG","freq":"OD","times":"12PM","notes":"1 TAB DAILY; OMIT IF SBP <110mmhg","upd":1.0,"dpd":1,"dpw":7,"uid":"u58"},{"name":"ROSUVASTATIN","dose":"20MG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u59"}],"prn":[],"pid":"P9"},{"sheet":"107B- CHEW KOK GEOK","name":"CHEW KOK GEOK","room":"107B","meds":[{"name":"TRITACE","dose":"5MG","freq":"OD","times":"6AM","notes":"1/2 TAB DAILY","upd":0.5,"dpd":1,"dpw":7,"uid":"u60"},{"name":"LASIX","dose":"20MG","freq":"OD","times":"6AM","notes":"1/2 TAB DAILY","upd":0.5,"dpd":1,"dpw":7,"uid":"u61"},{"name":"SPIRONOLACTONE","dose":"25MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u62"},{"name":"CONCOR","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF HR <50bpm","upd":1.0,"dpd":1,"dpw":7,"uid":"u63"},{"name":"DIGOXIN","dose":"250MCG","freq":"OD","times":"6AM","notes":"1/2 TAB DAILY","upd":0.5,"dpd":1,"dpw":7,"uid":"u64"},{"name":"PRADAXA","dose":"110MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X A DAY","upd":1.0,"dpd":2,"dpw":14,"uid":"u65"},{"name":"Q10","dose":"30MG","freq":"EOD","times":"6AM","notes":"1 TAB EACH OTHER DAY","upd":1.0,"dpd":"","dpw":3.5,"uid":"u66"},{"name":"CALCIUM MG2+","dose":"II/II","freq":"OD","times":"12PM","notes":"2 TAB DAILY","upd":2.0,"dpd":1,"dpw":7,"uid":"u67"},{"name":"CARTIPRO","dose":"I/I","freq":"OD","times":"12PM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u68"}],"prn":[],"pid":"P10"},{"sheet":"108A- TAN AH LEK","name":"TAN AH LEK","room":"108A","meds":[{"name":"TORPEZIL","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u69"},{"name":"CASPRIN","dose":"100MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u70"},{"name":"DUODART","dose":"0.5/0.4MG","freq":"OD","times":"6AM","notes":"1 CAPSULE DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u71"},{"name":"AMLIBON","dose":"10MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u72"},{"name":"URAL","dose":"I/I","freq":"OD","times":"6AM","notes":"1 SACHET DISSOLVED IN WATER ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u73"},{"name":"ALLOPURINOL","dose":"100MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u74"},{"name":"ROSUVASTATIN","dose":"20MG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u75"}],"prn":[],"pid":"P11"},{"sheet":"108B-TAN KUAN LYE","name":"TAN KUAN LYE","room":"108B","meds":[{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF SBP< 120mmhg","upd":1.0,"dpd":1,"dpw":7,"uid":"u76"},{"name":"JARDIANCE","dose":"12.5MG","freq":"OD","times":"6AM","notes":"1/2 TAB DAILY; OMIT IF HGT < 5.0mmol/L","upd":0.5,"dpd":1,"dpw":7,"uid":"u77"},{"name":"TANAKAN","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u78"},{"name":"SANGOBION","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u79"},{"name":"LOSARTAN","dose":"50MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X DAILY","upd":1.0,"dpd":2,"dpw":14,"uid":"u80"},{"name":"DOXYCYCLINE","dose":"1OOMG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X DAILY","upd":1.0,"dpd":2,"dpw":14,"uid":"u81"}],"prn":[],"pid":"P12"},{"sheet":"108C-SEE BAH TUA","name":"SEE BAH TUA","room":"108C","meds":[{"name":"PERIDOPRIL","dose":"4MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY ; PRE MEAL","upd":1.0,"dpd":1,"dpw":7,"uid":"u82"},{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF SBP< 110mmhg","upd":1.0,"dpd":1,"dpw":7,"uid":"u83"},{"name":"VIQUPRIN","dose":"100/45MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u84"},{"name":"CALCIUM CARBONATE","dose":"500MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u85"},{"name":"VITAMIN B COMPLEX","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u86"},{"name":"DOXAZOSIN","dose":"4MG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u87"},{"name":"FINASTERIDE","dose":"5MG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u88"},{"name":"DIPHENHYDOMINE","dose":"10MLS","freq":"TDS","times":"6AM/3PM/9PM","notes":"10MLS 3X A DAY","upd":"","dpd":3,"dpw":21,"uid":"u89"},{"name":"CETYREC","dose":"5MG","freq":"ON","times":"9PM","notes":"","upd":"","dpd":1,"dpw":7,"uid":"u90"}],"prn":[],"pid":"P13"},{"sheet":"109C- TEO HAI SIM","name":"TEO HAI SIM","room":"109C","meds":[{"name":"PANTOPRAZOLE","dose":"40MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; PRE MEAL","upd":1.0,"dpd":1,"dpw":7,"uid":"u91"},{"name":"FOLIC ACID","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u92"},{"name":"CLOPIDOGEL","dose":"75MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u93"},{"name":"VIT B COMPLEX","dose":"I/I","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u94"},{"name":"EPILIM","dose":"400MG","freq":"BD","times":"6AM/6PM","notes":"2 TAB 2X DAILY","upd":2.0,"dpd":2,"dpw":14,"uid":"u95"},{"name":"MADOPAR","dose":"25/100","freq":"BD","times":"12PM/9PM","notes":"1/2  TAB 2X DAILY","upd":0.5,"dpd":2,"dpw":14,"uid":"u96"},{"name":"ATROVASTATIN","dose":"40MG","freq":"ON","times":"9PM","notes":"2 TAB ON NIGHT (2OMG)","upd":2.0,"dpd":1,"dpw":7,"uid":"u97"}],"prn":[],"pid":"P14"},{"sheet":"110A- ANG AH LUN","name":"ANG AH LUN","room":"110A","meds":[{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF BP < 110mmhg","upd":1.0,"dpd":1,"dpw":7,"uid":"u98"},{"name":"APO- TERBINAFINE","dose":"250MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u99"},{"name":"BILAXTEN","dose":"20MG","freq":"BD","times":"6AM/6PM","notes":"PRE MEAL; 1TAB 2X A DAY","upd":1.0,"dpd":2,"dpw":14,"uid":"u100"},{"name":"MDI -BUDESODINE","dose":"400MCG","freq":"BD","times":"6AM/6PM","notes":"2 PUFF 2X A DAY; ORAL GARGLE POST ADMINISTOR","upd":2.0,"dpd":2,"dpw":14,"uid":"u101"},{"name":"PROSPAN","dose":"10MLS","freq":"BD","times":"6AM/6PM","notes":"10MLS 2X A DAY","upd":"","dpd":2,"dpw":14,"uid":"u102"},{"name":"FLUMUCIL","dose":"I/I","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X A DAY; DISSOLVED IN WATER","upd":1.0,"dpd":2,"dpw":14,"uid":"u103"},{"name":"BROMHEXINE","dose":"8MG","freq":"TDS","times":"6AM/3PM/9PM","notes":"1 TAB 3X A DAY","upd":1.0,"dpd":3,"dpw":21,"uid":"u104"}],"prn":[],"pid":"P15"},{"sheet":"110B- CHUAH AH CHYE","name":"CHUAH AH CHYE","room":"110B","meds":[{"name":"ZINCOFER","dose":"I/I","freq":"OD","times":"/6AM","notes":"1 CAP DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u105"},{"name":"FOLIC ACID","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u106"},{"name":"CARBIMAZOLE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u107"},{"name":"TCM HERBAL POWDER","dose":"I/I","freq":"OD","times":"12PM","notes":"1 SCOPE OF THE POWDER WITH H20 50MLS","upd":"","dpd":1,"dpw":7,"uid":"u108"},{"name":"SPIRONALACTONE","dose":"25MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB DAILY","upd":1.0,"dpd":2,"dpw":14,"uid":"u109"},{"name":"PROPANOLOL","dose":"20MG","freq":"BD","times":"6AM/6PM","notes":"1/2 TAB 2X DAILY","upd":0.5,"dpd":2,"dpw":14,"uid":"u110"},{"name":"SIMVASTATIN","dose":"4OMG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u111"}],"prn":[],"pid":"P16"},{"sheet":"110C- CHIA KHOON HOAY","name":"CHIA KHOON HOAY","room":"110C","meds":[{"name":"CONTROLOC","dose":"40MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u112"},{"name":"CLOPIDOGEL","dose":"75MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u113"},{"name":"CARDIPRIN","dose":"100MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u114"},{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF SBP < 120mmhg","upd":1.0,"dpd":1,"dpw":7,"uid":"u115"},{"name":"ROSUVASTATIN","dose":"20MG","freq":"ON","times":"6PM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u116"}],"prn":[],"pid":"P17"},{"sheet":"112A- LYE SEE MOOI","name":"LYE SEE MOOI","room":"112A","meds":[{"name":"GLYPRIN","dose":"100/45","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u117"},{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u118"},{"name":"GLICLAZIDE","dose":"60MG","freq":"OD","times":"6AM","notes":"2 TAB DAILY","upd":2.0,"dpd":1,"dpw":7,"uid":"u119"},{"name":"GOUTRIC","dose":"80MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY ; PRE MEAL","upd":1.0,"dpd":1,"dpw":7,"uid":"u120"},{"name":"METFORMIN","dose":"500MG","freq":"BD","times":"6AM/6PM","notes":"1 TAB 2X A DAY","upd":1.0,"dpd":2,"dpw":14,"uid":"u121"},{"name":"ATROVASTATIN","dose":"20MG","freq":"ON","times":"6PM","notes":"1 TAB ON NIGHT","upd":1.0,"dpd":1,"dpw":7,"uid":"u122"}],"prn":[],"pid":"P18"},{"sheet":"112B- CHOO SAI IN","name":"CHOO SAI IN","room":"112B","meds":[{"name":"AMLODIPINE","dose":"5MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF SBP< 120mmhg","upd":1.0,"dpd":1,"dpw":7,"uid":"u123"},{"name":"METFORMINE","dose":"500MG","freq":"OD","times":"6AM","notes":"1 TAB DAILY; OMIT IF HGT <5.0mmol/L","upd":1.0,"dpd":1,"dpw":7,"uid":"u124"},{"name":"MECOBALAMINE","dose":"500MCG","freq":"OD","times":"6AM","notes":"1 TAB DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u125"},{"name":"ENER B","dose":"I/I","freq":"OD","times":"6AM","notes":"1 CAPSULE DAILY","upd":1.0,"dpd":1,"dpw":7,"uid":"u126"}],"prn":[],"pid":"P19"}];
+let NEXTUID = 127;
+const WEEKS = 5;
+const SKEY = 'aikang_medlog_v4';
+const V3KEY = 'aikang_medlog_v3';
+let MODEL = null;
+let FIELDS = {};
+let NEXTPID = 20;
+let currentTab = 'master';
+
+/* ================= storage ================= */
+function persist(){
+  try{
+    localStorage.setItem(SKEY, JSON.stringify({model:MODEL, fields:FIELDS, nextuid:NEXTUID, nextpid:NEXTPID}));
+    return true;
+  }catch(e){ return false; }
+}
+function loadStore(){
+  try{
+    const s = localStorage.getItem(SKEY);
+    if(s){ const o = JSON.parse(s); MODEL = o.model; FIELDS = o.fields||{}; NEXTUID = o.nextuid||NEXTUID; NEXTPID = o.nextpid||NEXTPID; return; }
+    const v3 = localStorage.getItem(V3KEY);
+    if(v3){
+      const o = JSON.parse(v3);
+      MODEL = o.model; NEXTUID = o.nextuid||NEXTUID; NEXTPID = o.nextpid||NEXTPID;
+      const of = o.fields||{};
+      FIELDS = {};
+      Object.keys(of).forEach(k=>{
+        let m;
+        if(m = k.match(/^L_bf_(u\d+)$/)) FIELDS['BF_'+m[1]] = of[k];
+        else if(m = k.match(/^M_bf_(u\d+)$/)){ if(FIELDS['BF_'+m[1]]===undefined) FIELDS['BF_'+m[1]] = of[k]; }
+        else if(m = k.match(/^L_in(\d)_(u\d+)$/)) FIELDS['W'+m[1]+'_in_'+m[2]] = of[k];
+        else if(m = k.match(/^L_us(\d)_(u\d+)$/)) FIELDS['W'+m[1]+'_us_'+m[2]] = of[k];
+        else if(m = k.match(/^M_in_(u\d+)$/)){ if(FIELDS['W1_in_'+m[1]]===undefined) FIELDS['W1_in_'+m[1]] = of[k]; }
+        else if(m = k.match(/^M_us_(u\d+)$/)){ if(FIELDS['W1_us_'+m[1]]===undefined) FIELDS['W1_us_'+m[1]] = of[k]; }
+        else if(m = k.match(/^M_rk_(u\d+)$/)) FIELDS['RK_'+m[1]] = of[k];
+        else if(m = k.match(/^L_rk_(u\d+)$/)){ if(FIELDS['RK_'+m[1]]===undefined) FIELDS['RK_'+m[1]] = of[k]; }
+        else FIELDS[k] = of[k];
+      });
+      persist(); return;
+    }
+    MODEL = JSON.parse(JSON.stringify(SEED));
+  }catch(e){ MODEL = JSON.parse(JSON.stringify(SEED)); FIELDS = {}; }
+}
+
+/* ---- Friday week dates ---- */
+function wk1Friday(){
+  if(FIELDS._wk1fri) return new Date(FIELDS._wk1fri + 'T00:00:00');
+  const d = new Date(); d.setHours(0,0,0,0);
+  const off = (5 - d.getDay() + 7) % 7;   // next Friday (today if Friday)
+  d.setDate(d.getDate() + off);
+  return d;
+}
+function fridayStr(w, long){
+  const d = new Date(wk1Friday()); d.setDate(d.getDate() + 7*(w-1));
+  const dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
+  return long ? dd+'/'+mm+'/'+String(d.getFullYear()).slice(2) : dd+'/'+mm;
+}
+function wk1ISO(){ const d = wk1Friday(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function setWk1(inp){ FIELDS._wk1fri = inp.value; persist(); renderAll(currentTab); }
+function activeWeek(){ const w = parseInt(FIELDS._aw); return (w>=1 && w<=WEEKS) ? w : 1; }
+function setWeek(w){ FIELDS._aw = String(w); persist(); renderAll(currentTab); }
+function syncInputs(){ document.querySelectorAll('input[data-k]').forEach(i=>{ FIELDS[i.dataset.k]=i.value; }); }
+function saveAll(){
+  syncInputs();
+  const ok = persist();
+  const m = document.getElementById('savemsg');
+  m.textContent = ok ? '✓ SAVED ' + new Date().toLocaleTimeString() : '⚠ SAVED IN SESSION ONLY';
+  setTimeout(()=>m.textContent='', 4000);
+}
+function exportJSON(){
+  syncInputs();
+  const blob = new Blob([JSON.stringify({model:MODEL, fields:FIELDS, nextuid:NEXTUID},null,1)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'AIKANG_MEDLOG_BACKUP_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+function importJSON(inp){
+  const f = inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e=>{
+    try{
+      const o = JSON.parse(e.target.result);
+      if(o.model){ MODEL=o.model; FIELDS=o.fields||{}; NEXTUID=o.nextuid||NEXTUID; }
+      else { FIELDS=o; } // v1 backup: fields only
+      persist(); renderAll(); alert('Restored.');
+    }catch(err){ alert('Invalid backup file.'); }
+  };
+  r.readAsText(f); inp.value='';
+}
+
+/* ================= helpers ================= */
+const num = v => { const n = parseFloat(v); return isNaN(n)?0:n; };
+const blank = v => v===undefined || v===null || String(v).trim()==='';
+const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+function fld(key, cls, w, ph){
+  const v = FIELDS[key]!==undefined ? FIELDS[key] : '';
+  return `<input class="fill ${cls||''}" data-k="${key}" value="${esc(v)}" style="width:${w||'54px'}" placeholder="${ph||''}" oninput="onField(this)">`;
+}
+function mfld(uid, field, w, isPrn, cls){
+  const m = findMed(uid); const v = m ? (m[field]===undefined?'':m[field]) : '';
+  return `<input class="medfield ${cls||''}" data-m="${uid}:${field}" value="${esc(v)}" style="width:${w||'70px'}" oninput="onMedField(this)">`;
+}
+function findMed(uid){
+  for(const p of MODEL){ for(const m of p.meds) if(m.uid===uid) return m; for(const m of p.prn) if(m.uid===uid) return m; }
+  return null;
+}
+function onField(i){
+  FIELDS[i.dataset.k] = i.value;
+  document.querySelectorAll(`input[data-k="${i.dataset.k}"]`).forEach(x=>{ if(x!==i) x.value = i.value; });
+  recalcAll();
+}
+function onMedField(i){
+  const [uid, field] = i.dataset.m.split(':');
+  const m = findMed(uid); if(!m) return;
+  m[field] = i.value;
+  // mirror to twin inputs in other views
+  document.querySelectorAll(`input[data-m="${uid}:${field}"]`).forEach(x=>{ if(x!==i) x.value = i.value; });
+  recalcAll();
+}
+function onPatient(i){
+  const [pid, field] = i.dataset.p.split(':');
+  const p = MODEL.find(x=>x.pid===pid); if(!p) return;
+  p[field] = i.value;
+  document.querySelectorAll(`input[data-p="${pid}:${field}"]`).forEach(x=>{ if(x!==i) x.value = i.value; });
+  // update tab label
+  const t = document.querySelector(`.tab[data-v="${pid}"]`);
+  if(t) t.textContent = (p.room||'?') + (p.name?' '+p.name.split(' ')[0]:'');
+}
+function pfld(p, field, cls, w, ph){
+  return `<input class="${cls}" data-p="${p.pid}:${field}" value="${esc(p[field]||'')}" style="width:${w||'auto'}" placeholder="${ph||''}" oninput="onPatient(this)">`;
+}
+
+/* ================= add / delete ================= */
+function addMed(pid, isPrn){
+  const p = MODEL.find(x=>x.pid===pid); if(!p) return;
+  const m = isPrn
+    ? {uid:'u'+(NEXTUID++), name:'', dose:'', freq:'PRN', indication:'', max:''}
+    : {uid:'u'+(NEXTUID++), name:'', dose:'', freq:'', times:'', notes:'', upd:'', dpw:''};
+  (isPrn ? p.prn : p.meds).push(m);
+  persist(); renderAll(pid);
+}
+function delMed(pid, uid){
+  const p = MODEL.find(x=>x.pid===pid); if(!p) return;
+  const m = findMed(uid);
+  if(!confirm('DELETE medication "'+(m&&m.name?m.name:'(blank)')+'" for '+(p.name||p.room)+'?\nThis removes it from MASTER, LOG and CHART.')) return;
+  p.meds = p.meds.filter(x=>x.uid!==uid);
+  p.prn  = p.prn.filter(x=>x.uid!==uid);
+  Object.keys(FIELDS).forEach(k=>{ if(k.endsWith('_'+uid)) delete FIELDS[k]; });
+  persist(); renderAll(pid==='master'?'master':pid);
+}
+
+/* ================= patient add / delete ================= */
+function addPatient(){
+  const room = prompt('NEW PATIENT — enter ROOM NO (e.g. 103B):');
+  if(room===null) return;
+  const name = prompt('Enter PATIENT NAME:') || '';
+  const p = {pid:'P'+(NEXTPID++), sheet:'', room:(room||'').toUpperCase().trim(), name:name.toUpperCase().trim(), meds:[], prn:[]};
+  MODEL.push(p);
+  persist(); renderAll(p.pid);
+}
+function delPatient(pid){
+  const p = MODEL.find(x=>x.pid===pid); if(!p) return;
+  const label = (p.room||'?') + ' ' + (p.name||'(unnamed)');
+  if(!confirm('DELETE PATIENT ' + label + '?\nThis permanently removes the patient and ALL their medications, balances and chart records from MASTER, LOG and CHART.')) return;
+  if(!confirm('FINAL CONFIRMATION — delete ' + label + ' and all records?')) return;
+  const uids = [...p.meds, ...p.prn].map(m=>m.uid);
+  MODEL = MODEL.filter(x=>x.pid!==pid);
+  Object.keys(FIELDS).forEach(k=>{
+    if(k.endsWith('_'+pid)) delete FIELDS[k];
+    uids.forEach(u=>{ if(k.endsWith('_'+u)) delete FIELDS[k]; });
+  });
+  persist(); renderAll('master');
+}
+
+/* ================= legend ================= */
+function legendHTML(){
+return `<div class="legend">
+ <div>
+  <h4>Standard of Medication Serving Timing</h4>
+  <table>
+   <tr><td><b>OD</b></td><td>6:00 / 9:00</td></tr>
+   <tr><td><b>ON</b></td><td>18:00 / 21:00</td></tr>
+   <tr><td><b>BD</b></td><td>6:00 / 12:00 &nbsp;&nbsp; 18:00 / 21:00</td></tr>
+   <tr><td><b>TDS</b></td><td>6:00 &nbsp; 15:00 &nbsp; 21:00</td></tr>
+   <tr><td><b>QID</b></td><td>6:00 &nbsp; 12:00 &nbsp; 18:00 &nbsp; 24:00</td></tr>
+   <tr><td><b>PRN</b></td><td>WHEN NECESSARY</td></tr>
+   <tr><td><b>STAT</b></td><td>IMMEDIATE AND SINGLE DOSE ONLY</td></tr>
+  </table>
+ </div>
+ <div>
+  <h4>Special Colour Coding</h4>
+  <div><span class="swatch" style="background:#FCE4EC">&nbsp;</span>PRE MEAL</div>
+  <div style="margin-top:3px"><span class="swatch" style="background:#E8F5E9">&nbsp;</span>TCM</div>
+  <div style="margin-top:3px"><span class="swatch" style="background:#FFCDD2">&nbsp;</span>DDA / HIGH ALERT</div>
+  <div style="margin-top:3px"><span class="swatch" style="background:#FFF9C4">&nbsp;</span>SPECIAL INSTRUCTION</div>
+ </div>
+ <div>
+  <h4>Working Instruction</h4>
+  <div><span class="code">O</span> INDICATED OMIT</div>
+  <div><span class="code">R</span> INDICATED REFUSE</div>
+  <div><span class="code">*</span> INDICATED OUT OF STOCK</div>
+  <div><span class="code">//~</span> INDICATED DISCONTINUE</div>
+  <div style="margin-top:4px">CHART: TOP CELL = PERSON WHO PREPARED &nbsp;•&nbsp; BOTTOM CELL = PERSON WHO SERVED &nbsp;•&nbsp; LOG: BAL B/F + IN − USED CARRIES TO NEXT WEEK</div>
+ </div>
+ <div class="redink">*****INDICATED ALL IN RED INK FOR ALL INDICATION*****</div>
+</div>`;
+}
+
+/* ================= MASTER ================= */
+function masterHTML(){
+  let h = `<div class="page">
+  <div class="copyright">© AIKANG CARE CENTER BM</div>
+  <div class="titleblock">
+    <div class="tl">
+      <div class="nm"><span>UNIT:</span> 1ST FLOOR — ALL PATIENTS</div>
+      <div class="ttl">AIKANG MEDICATION MASTER LIST &amp; WEEKLY BALANCE</div>
+    </div>
+    <div class="tr">
+      <div>COUNT DAY: <b>EVERY FRIDAY</b></div>
+      <div>WEEK ENDING: <b style="font-size:14px">FRI ${fridayStr(activeWeek(),true)}</b></div>
+    </div>
+  </div>
+  <div class="hint" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <b>ACTIVE WEEK:</b>
+    ${[1,2,3,4,5].map(w=>`<button class="subtab ${w===activeWeek()?'active':''} noprint" onclick="setWeek(${w})">W${w} · ${fridayStr(w)}</button>`).join('')}
+    <span class="noprint">| WK1 FRIDAY: <input type="date" class="fill noprint" value="${wk1ISO()}" onchange="setWk1(this)"></span>
+    <span style="flex-basis:100%">Key in BAL B/F, STOCK IN &amp; QTY USED here — the patient's individual sheet fills in automatically (and vice-versa). B/F for W2+ carries from the previous week.</span>
+  </div>
+  <table>
+   <thead><tr>
+    <th style="min-width:170px">PRESCRIBED MEDICATION</th><th>DOSAGES</th><th>FREQUENCY</th>
+    <th>UNITS/<br>DOSE</th><th>DOSES/<br>WK</th><th>QTY/<br>WK</th>
+    <th>BAL<br>B/F</th><th>STOCK<br>IN</th><th>QTY<br>USED</th>
+    <th>NEW<br>BALANCE</th><th>WEEKS<br>LEFT</th><th>STATUS</th><th style="min-width:120px">REMARKS</th><th class="noprint" style="width:30px"></th>
+   </tr></thead><tbody>`;
+  MODEL.forEach(p=>{
+    h += `<tr class="patientband"><td colspan="14">
+      <span class="rm">${pfld(p,'room','','64px','ROOM')}</span>
+      NAME: ${pfld(p,'name','pname','240px','PATIENT NAME')}
+      <button class="btn add small noprint" style="margin-left:14px" onclick="addMed('${p.pid}',false)">➕ MED</button>
+      <button class="btn add small noprint" onclick="addMed('${p.pid}',true)">➕ PRN</button>
+      <button class="btn del small noprint" onclick="delPatient('${p.pid}')">🗑</button>
+    </td></tr>`;
+    p.meds.forEach(m=>{
+      const u = m.uid;
+      h += `<tr data-row="${u}" data-kind="M">
+       <td class="med">${mfld(u,'name','100%')}</td>
+       <td>${mfld(u,'dose','64px')}</td>
+       <td>${mfld(u,'freq','52px')}</td>
+       <td>${mfld(u,'upd','38px')}</td>
+       <td>${mfld(u,'dpw','38px')}</td>
+       <td class="qtywk" data-cell="qtywk"></td>
+       ${activeWeek()===1 ? `<td>${fld('BF_'+u)}</td>` : `<td class="calc" data-cell="bfprev" title="carried from week ${activeWeek()-1}"></td>`}
+       <td>${fld('W'+activeWeek()+'_in_'+u)}</td>
+       <td>${fld('W'+activeWeek()+'_us_'+u)}</td>
+       <td class="calc" data-cell="bal"></td>
+       <td class="calc" data-cell="wks"></td>
+       <td class="status" data-cell="st"></td>
+       <td>${fld('RK_'+u,'wide','100%')}</td>
+       <td class="noprint"><button class="btn del" onclick="delMed('${p.pid}','${u}')">✖</button></td>
+      </tr>`;
+    });
+    p.prn.forEach(m=>{
+      const u = m.uid;
+      h += `<tr data-row="${u}" data-kind="MP">
+       <td class="med prnname">${mfld(u,'name','100%')} <b style="color:var(--red)">(PRN)</b></td>
+       <td>${mfld(u,'dose','64px')}</td>
+       <td>PRN</td><td></td><td></td><td class="qtywk"></td>
+       ${activeWeek()===1 ? `<td>${fld('BF_'+u)}</td>` : `<td class="calc" data-cell="bfprev"></td>`}
+       <td>${fld('W'+activeWeek()+'_in_'+u)}</td>
+       <td>${fld('W'+activeWeek()+'_us_'+u)}</td>
+       <td class="calc" data-cell="bal"></td><td></td><td></td>
+       <td class="notes">${mfld(u,'indication','100%','', 'wide')}</td>
+       <td class="noprint"><button class="btn del" onclick="delMed('${p.pid}','${u}')">✖</button></td>
+      </tr>`;
+    });
+  });
+  h += `</tbody></table>
+  <div class="sig"><table><tr>
+    <th style="width:33%">COUNTED BY</th><th style="width:33%">VERIFIED BY</th><th>DATE</th></tr>
+   <tr><td>${fld('m_cnt','wide','95%')}</td><td>${fld('m_ver','wide','95%')}</td><td>${fld('m_dt','wide','95%')}</td></tr>
+  </table></div>
+  ${legendHTML()}
+  <div class="verfoot">1/6/2026 — MEDICATION MASTER LIST VER.IV © AIKANG CARE CENTER BM • STATUS: REORDER &lt; 2 WKS • LOW &lt; 4 WKS • OK = SUFFICIENT</div>
+  </div>`;
+  return h;
+}
+
+/* ================= PATIENT (LOG + CHART subviews) ================= */
+function patientHTML(p){
+  return `<div class="page">
+   <div class="subtabs noprint">
+     <button class="subtab active" data-s="log" onclick="showSub('${p.pid}','log',this)">📋 WEEKLY BALANCE LOG</button>
+     <button class="subtab" data-s="chart" onclick="showSub('${p.pid}','chart',this)">💊 MEDICATION RECORD CHART</button>
+     <span class="spacer" style="flex:1"></span>
+     <button class="btn add small" onclick="addMed('${p.pid}',false)">➕ ADD MEDICATION</button>
+     <button class="btn add small" onclick="addMed('${p.pid}',true)">➕ ADD PRN</button>
+     <button class="btn del small" onclick="delPatient('${p.pid}')">🗑 DELETE PATIENT</button>
+   </div>
+   <div class="subview active" id="sv_${p.pid}_log">${logHTML(p)}</div>
+   <div class="subview" id="sv_${p.pid}_chart">${chartHTML(p)}</div>
+  </div>`;
+}
+
+function titleBlock(p, title, right2){
+  return `<div class="copyright">© AIKANG CARE CENTER BM</div>
+  <div class="titleblock">
+    <div class="tl">
+      <div class="nm"><span>NAME:</span> ${pfld(p,'name','namefield','260px','PATIENT NAME')}</div>
+      <div class="ttl">${title}</div>
+    </div>
+    <div class="tr">
+      <div>ROOM NO: ${pfld(p,'room','namefield','70px','ROOM')}</div>
+      <div>${right2}</div>
+    </div>
+  </div>
+  <div class="allergy">ALLERGIES: ${fld('PT_allergy_'+p.pid,'wide','100%','NKDA / specify')}</div>`;
+}
+
+function logHTML(p){
+  let wkhead1 = '', wkhead2 = '';
+  for(let w=1; w<=WEEKS; w++){
+    wkhead1 += `<th colspan="3" class="wkhdr ${w%2?'':'alt'}">WEEK ${w} — FRI ${fridayStr(w,true)}</th>`;
+    wkhead2 += `<th class="wkhdr ${w%2?'':'alt'}">IN</th><th class="wkhdr ${w%2?'':'alt'}">USED</th><th class="wkhdr ${w%2?'':'alt'}">BAL</th>`;
+  }
+  let h = titleBlock(p, 'AIKANG PATIENT MEDICATION LOG &amp; WEEKLY BALANCE', `MONTH: ${fld('PT_month_'+p.pid,'','100px')}`);
+  h += `<table><thead>
+    <tr><th rowspan="2" style="min-width:150px">PRESCRIBED MEDICATION</th><th rowspan="2">DOSAGES</th><th rowspan="2">FREQ</th>
+        <th rowspan="2">UNITS/<br>DOSE</th><th rowspan="2">DOSES/<br>WK</th><th rowspan="2">QTY/<br>WK</th><th rowspan="2">BAL<br>B/F</th>${wkhead1}<th rowspan="2" style="min-width:90px">REMARKS</th><th rowspan="2" class="noprint" style="width:30px"></th></tr>
+    <tr class="wk">${wkhead2}</tr>
+   </thead><tbody>`;
+  p.meds.forEach(m=>{
+    const u = m.uid;
+    let cells = '';
+    for(let w=1; w<=WEEKS; w++){
+      cells += `<td>${fld('W'+w+'_in_'+u,'','42px')}</td><td>${fld('W'+w+'_us_'+u,'','42px')}</td><td class="calc" data-cell="wbal${w}"></td>`;
+    }
+    h += `<tr data-row="${u}" data-kind="L">
+     <td class="med">${mfld(u,'name','100%')}</td>
+     <td>${mfld(u,'dose','58px')}</td>
+     <td>${mfld(u,'freq','46px')}</td>
+     <td>${mfld(u,'upd','36px')}</td>
+     <td>${mfld(u,'dpw','36px')}</td>
+     <td class="qtywk" data-cell="qtywk"></td>
+     <td>${fld('BF_'+u,'','46px')}</td>
+     ${cells}
+     <td>${fld('RK_'+u,'wide','100%')}</td>
+     <td class="noprint"><button class="btn del" onclick="delMed('${p.pid}','${u}')">✖</button></td></tr>
+     <tr><td class="notes" colspan="${8+WEEKS*3}">INSTRUCTION/ NOTES: ${mfld(u,'notes','60%')} &nbsp;•&nbsp; SERVE: ${mfld(u,'times','120px')}</td><td class="noprint"></td></tr>`;
+  });
+  h += `</tbody></table>`;
+  h += `<table style="margin-top:12px"><tbody>
+   <tr class="sectband"><td colspan="${8+WEEKS*3}">AIKANG PATIENT WHEN NECESSARY (PRN) RECORDS — RECORD ACTUAL USAGE EACH WEEK</td></tr>
+   <tr class="prnhdr"><th style="min-width:150px">PRESCRIBED MEDICATION</th><th>DOSAGES</th><th>FREQ</th><th colspan="2">INDICATION</th><th>MAX<br>DOSE</th><th>BAL<br>B/F</th>`;
+  for(let w=1; w<=WEEKS; w++) h += `<th>IN</th><th>USED</th><th>BAL</th>`;
+  h += `<th>REMARKS</th><th class="noprint" style="width:30px"></th></tr>`;
+  p.prn.forEach(m=>{
+    const u = m.uid;
+    let cells = '';
+    for(let w=1; w<=WEEKS; w++){
+      cells += `<td>${fld('W'+w+'_in_'+u,'','42px')}</td><td>${fld('W'+w+'_us_'+u,'','42px')}</td><td class="calc" data-cell="wbal${w}"></td>`;
+    }
+    h += `<tr data-row="${u}" data-kind="L">
+     <td class="med prnname">${mfld(u,'name','100%')}</td>
+     <td>${mfld(u,'dose','58px')}</td>
+     <td>PRN</td>
+     <td colspan="2" class="notes">${mfld(u,'indication','100%')}</td>
+     <td>${mfld(u,'max','46px')}</td>
+     <td>${fld('BF_'+u,'','46px')}</td>
+     ${cells}
+     <td>${fld('RK_'+u,'wide','100%')}</td>
+     <td class="noprint"><button class="btn del" onclick="delMed('${p.pid}','${u}')">✖</button></td></tr>`;
+  });
+  h += `</tbody></table>`;
+  h += `<div class="sig"><table><thead><tr><th style="width:140px">WEEKLY STOCK COUNT</th>`;
+  for(let w=1; w<=WEEKS; w++) h += `<th>WEEK ${w}</th>`;
+  h += `</tr></thead><tbody>`;
+  ['COUNTED BY','VERIFIED BY','DATE'].forEach((lab,li)=>{
+    h += `<tr><td style="text-align:left;font-weight:bold;color:var(--navy)">${lab}:</td>`;
+    for(let w=1; w<=WEEKS; w++) h += `<td>${fld('PT_sig'+li+'_'+w+'_'+p.pid,'wide','92%')}</td>`;
+    h += `</tr>`;
+  });
+  h += `</tbody></table></div>
+  <div style="margin-top:8px; font-weight:bold;">PRE PACKED BY: ${fld('PT_prepack_'+p.pid,'','220px')}</div>
+  ${legendHTML()}
+  <div class="verfoot">1/6/2026 — PATIENT MEDICATION LOG WITH WEEKLY BALANCE VER.IV © AIKANG CARE CENTER BM</div>`;
+  return h;
+}
+
+/* ---- MAR chart subview (replicates attached weekly chart) ---- */
+function chartHTML(p){
+  const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  let h = titleBlock(p, 'AIKANG PATIENT MEDICATION RECORD', `PAGE: <b>1</b> &nbsp; WEEK: ${fld('PT_cwk_'+p.pid,'','90px','__/__–__/__')}`);
+  h += `<table><thead>
+    <tr><th rowspan="2" style="min-width:160px">PRESCRIBED MEDICATION</th><th rowspan="2">DOSAGES</th><th rowspan="2">FREQUENCY</th><th rowspan="2" style="min-width:64px">DAYS<br><span style="font-weight:normal;font-size:9.5px">TIME</span></th>`;
+  DAYS.forEach(d=> h += `<th>${d}</th>`);
+  h += `<th rowspan="2" class="noprint" style="width:30px"></th></tr><tr class="wk"><th colspan="7" style="font-size:9.5px">DATE: ${fld('PT_cdates_'+p.pid,'','260px','enter dates e.g. 8/6 – 14/6')} &nbsp; | &nbsp; TOP = PREPARED BY • BOTTOM = SERVED BY</th></tr>
+   </thead><tbody>`;
+  p.meds.forEach(m=>{
+    const u = m.uid;
+    h += `<tr data-row="${u}">
+      <td class="med" rowspan="2">${mfld(u,'name','100%')}</td>
+      <td rowspan="2">${mfld(u,'dose','58px')}</td>
+      <td rowspan="2">${mfld(u,'freq','46px')}</td>
+      <td rowspan="2">${mfld(u,'times','56px')}</td>`;
+    DAYS.forEach((d,di)=> h += `<td class="sign">${fld('C_p_'+di+'_'+u,'','100%')}</td>`);
+    h += `<td rowspan="2" class="noprint"><button class="btn del" onclick="delMed('${p.pid}','${u}')">✖</button></td></tr><tr>`;
+    DAYS.forEach((d,di)=> h += `<td class="sign">${fld('C_s_'+di+'_'+u,'','100%')}</td>`);
+    h += `</tr>
+    <tr><td class="notes" colspan="11">INSTRUCTION/ NOTES: ${mfld(u,'notes','80%')}</td><td class="noprint"></td></tr>`;
+  });
+  h += `</tbody></table>
+  <div style="text-align:right; font-weight:bold; margin-top:6px">PRE PACKED BY: ${fld('PT_prepack_'+p.pid,'','220px')}</div>`;
+  /* PRN usage records (chart style) */
+  h += `<table style="margin-top:12px"><tbody>
+   <tr class="sectband"><td colspan="12">AIKANG PATIENT WHEN NECESSARY (PRN) RECORDS</td></tr>
+   <tr class="prnhdr"><th style="min-width:160px">PRESCRIBED MEDICATION</th><th>DOSAGES</th><th>FREQUENCY</th><th>DAYS<br>TIME</th>`;
+  ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(d=> h += `<th>${d}</th>`);
+  h += `<th class="noprint" style="width:30px"></th></tr>`;
+  p.prn.forEach(m=>{
+    const u = m.uid;
+    h += `<tr data-row="${u}">
+      <td class="med prnname" rowspan="2">${mfld(u,'name','100%')}<div class="notes">IND: ${mfld(u,'indication','100%')}</div></td>
+      <td rowspan="2">${mfld(u,'dose','58px')}</td>
+      <td rowspan="2">PRN<br>MAX ${mfld(u,'max','44px')}</td>
+      <td rowspan="2"></td>`;
+    DAYS.forEach((d,di)=> h += `<td class="sign">${fld('C_p_'+di+'_'+u,'','100%')}</td>`);
+    h += `<td rowspan="2" class="noprint"><button class="btn del" onclick="delMed('${p.pid}','${u}')">✖</button></td></tr><tr>`;
+    DAYS.forEach((d,di)=> h += `<td class="sign">${fld('C_s_'+di+'_'+u,'','100%')}</td>`);
+    h += `</tr>`;
+  });
+  h += `</tbody></table>
+  ${legendHTML()}
+  <div class="verfoot">1/6/2026 — AIKANG PATIENT MEDICATION RECORD VER.IV © AIKANG CARE CENTER BM</div>`;
+  return h;
+}
+
+/* ================= calc ================= */
+function chainBal(u, through){
+  // returns {bal, any} balance after week `through` (0 = just B/F)
+  const bf = FIELDS['BF_'+u];
+  let any = !blank(bf);
+  let bal = num(bf);
+  for(let w=1; w<=through; w++){
+    const i = FIELDS['W'+w+'_in_'+u], s = FIELDS['W'+w+'_us_'+u];
+    if(!blank(i) || !blank(s)) any = true;
+    bal += num(i) - num(s);
+  }
+  return {bal:bal, any:any};
+}
+
+function recalcAll(){
+  const AW = activeWeek();
+  document.querySelectorAll('tr[data-row]').forEach(tr=>{
+    const u = tr.dataset.row;
+    const m = findMed(u); if(!m) return;
+    const upd = parseFloat(m.upd), dpw = parseFloat(m.dpw);
+    const qtywk = (!isNaN(upd) && !isNaN(dpw)) ? upd*dpw : NaN;
+    const qtyCell = tr.querySelector('[data-cell="qtywk"]');
+    if(qtyCell) qtyCell.textContent = isNaN(qtywk)?'':(+qtywk.toFixed(1));
+
+    if(tr.dataset.kind==='M' || tr.dataset.kind==='MP'){
+      const prev = chainBal(u, AW-1);
+      const cur  = chainBal(u, AW);
+      const bfCell = tr.querySelector('[data-cell="bfprev"]');
+      if(bfCell) bfCell.textContent = prev.any ? +prev.bal.toFixed(1) : '';
+      const balCell = tr.querySelector('[data-cell="bal"]');
+      if(balCell) balCell.textContent = cur.any ? +cur.bal.toFixed(1) : '';
+      const wkCell = tr.querySelector('[data-cell="wks"]'), stCell = tr.querySelector('[data-cell="st"]');
+      if(wkCell && stCell){
+        if(cur.any && !isNaN(qtywk) && qtywk>0){
+          const wl = cur.bal/qtywk;
+          wkCell.textContent = wl.toFixed(1);
+          stCell.textContent = wl<2?'REORDER':(wl<4?'LOW':'OK');
+          stCell.className = 'status ' + (wl<2?'reorder':(wl<4?'low':'ok'));
+        } else { wkCell.textContent=''; stCell.textContent=''; stCell.className='status'; }
+      }
+    }
+    if(tr.dataset.kind==='L'){
+      for(let w=1; w<=WEEKS; w++){
+        const cell = tr.querySelector(`[data-cell="wbal${w}"]`);
+        if(!cell) continue;
+        const r = chainBal(u, w);
+        cell.textContent = r.any ? +r.bal.toFixed(1) : '';
+      }
+    }
+  });
+}
+
+/* ================= render ================= */
+function renderAll(keepTab){
+  const tabs = document.getElementById('tabs');
+  const views = document.getElementById('views');
+  let th = `<button class="tab master" data-v="master" onclick="show('master',this)">★ MASTER LIST</button>`;
+  let vh = `<div class="view" id="v_master">${masterHTML()}</div>`;
+  MODEL.forEach(p=>{
+    th += `<button class="tab" data-v="${p.pid}" onclick="show('${p.pid}',this)">${esc(p.room||'?')}${p.name?' '+esc(p.name.split(' ')[0]):''}</button>`;
+    vh += `<div class="view" id="v_${p.pid}">${patientHTML(p)}</div>`;
+  });
+  tabs.innerHTML = th; views.innerHTML = vh;
+  const target = keepTab || currentTab || 'master';
+  const btn = document.querySelector(`.tab[data-v="${target}"]`) || document.querySelector('.tab[data-v="master"]');
+  show(btn.dataset.v, btn);
+  recalcAll();
+}
+function show(v, btn){
+  currentTab = v;
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active','printme'));
+  const el = document.getElementById('v_'+v);
+  el.classList.add('active','printme');
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+}
+function showSub(pid, s, btn){
+  document.querySelectorAll(`#v_${pid} .subview`).forEach(x=>x.classList.remove('active'));
+  document.getElementById(`sv_${pid}_${s}`).classList.add('active');
+  document.querySelectorAll(`#v_${pid} .subtab`).forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+window.__kvPrefetch.then(function(){ loadStore(); renderAll('master'); });
+window.addEventListener('beforeunload', ()=>{ syncInputs(); persist(); });
+</script>
+</body>
+</html>
